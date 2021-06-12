@@ -1,0 +1,36 @@
+version: '3.4'
+
+networks:
+    net_vpn:
+
+services: 
+    svc_vpn:    
+        image: lehela/openvpn:latest
+        build:
+            context: ./vpn
+            dockerfile: Dockerfile
+        container_name: con_openvpn
+        volumes: 
+            - ./vpn:/host
+            - ./vpn/conf-openvpn:/etc/openvpn
+            - ./vpn/conf-squid3:/etc/squid/conf.d
+        cap_add: 
+            - NET_ADMIN
+        devices: 
+            - /dev/net/tun
+        restart: unless-stopped
+        networks: 
+            - net_vpn
+    svc_proxy:
+        image: lehela/cyberghost_proxy:latest
+        build:
+            context: ./proxy
+            dockerfile: Dockerfile
+        container_name: con_openvpn_proxy
+        ports: 
+            - 3128:3128
+        networks: 
+            - net_vpn
+        restart: unless-stopped
+        depends_on: 
+            - svc_vpn

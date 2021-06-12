@@ -1,0 +1,4 @@
+vpn/conf-openvpn/credentials.txt
+vpn/conf-openvpn/ca.crt
+vpn/conf-openvpn/client.crt
+vpn/conf-openvpn/client.key
